@@ -38,19 +38,26 @@ class User(db.Model):
     from datetime import datetime
     __tablename__ = "user"
     idx = db.Column(db.Integer(), primary_key=True)
-    email = db.Column(db.String(64))
-    pw = db.Column(db.String(32))
-    name = db.Column(db.String(32))
+    email = db.Column(db.String(64), unique=True)
+    password = db.Column(db.String(255))
     fb_id = db.Column(db.String(30), unique=True)
     is_active = db.Column(db.BOOLEAN, nullable=False, default=True)
     created_at = db.Column(db.DateTime, default=datetime.now())
     slides = db.relationship('Slide', secondary=users_slides, backref='users')
 
-    def __init__(self, email, pw, name,  fb_id=None):
+    def __init__(self, email, password, fb_id=None):
         self.email = email
-        self.pw = pw
-        self.name = name
+        self.set_password(password)
         self.fb_id = fb_id
+
+    def set_password(self, password):
+        from werkzeug.security import generate_password_hash
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        from werkzeug.security import check_password_hash, generate_password_hash
+        print(self.password, generate_password_hash(password), check_password_hash(self.password, password))
+        return check_password_hash(self.password, password)
 
 
 class Slide(db.Model):
@@ -58,14 +65,13 @@ class Slide(db.Model):
     idx = db.Column(db.Integer(), primary_key=True)
     slideshare_url = db.Column(db.String(255))
     thumbnail = db.Column(db.String(255))
-    pdf_path = db.Column(db.String)
+    pdf_path = db.Column(db.String(255))
     views = db.Column(db.Integer, default=0)
 
     def __init__(self, slideshare_url, thumbnail, pdf_path):
         self.slideshare_url = slideshare_url
         self.thumbnail = thumbnail
         self.pdf_path = pdf_path
-
 
 migrate = Migrate(app, db)
 manager = Manager(app)
