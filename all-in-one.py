@@ -1,12 +1,13 @@
-from flask import Flask, render_template, request as req
+from flask import Flask, render_template, request as req, send_from_directory
 from celery import Celery
 from os import path, walk, system, makedirs
 from os.path import join, abspath
 
 
 MEDIA = '/tmp/slideshare-vpn/'
-tmpl_dir = path.join(path.dirname(path.abspath(__file__)), 'templates')
-app = Flask(__name__, template_folder=tmpl_dir)
+TEMPLATE_DIR = path.join(path.dirname(path.abspath(__file__)), 'templates')
+STATIC_DIR = path.join(path.dirname(path.abspath(__file__)), 'static')
+app = Flask(__name__, template_folder=TEMPLATE_DIR)
 
 
 def create_app():
@@ -16,6 +17,11 @@ def create_app():
 app = create_app()
 print(app.config['CELERY_BROKER_URL'])
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+
+
+@app.route('/static/<path:filename>')
+def static_serving(filename):
+    return send_from_directory(STATIC_DIR, filename)
 
 
 def get_dir_files(title):
