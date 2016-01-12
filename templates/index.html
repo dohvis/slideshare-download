@@ -5,7 +5,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-    <title>Domain Name Generator For Perfectionists</title>
+    <title>:: Slideshare Downloader ::</title>
 
     <script data-cfasync="false" type="text/javascript">
         var FDUPA = FDUPA || {};
@@ -18,10 +18,20 @@
     <link rel="stylesheet" href="/static/css/ncommon.css" type="text/css">
     <link href="/static/css/font-awesome.css" rel="stylesheet">
     <link href="/static/css/style.css" rel="stylesheet" type="text/css">
+    <link href="http://lipis.github.io/bootstrap-social/assets/css/font-awesome.css" rel="stylesheet" type="text/css">
+    <link href="http://lipis.github.io/bootstrap-social/bootstrap-social.css" rel="stylesheet" type="text/css">
 
 </head>
 
 <body>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+            <script> alert("{{ message }}"); </script>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
     <nav class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
             <!--button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -36,10 +46,63 @@
             <ul class="nav navbar-nav">
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#" class="pad-17">Login</a></li>
+                {% if session %}
+                <li><a class="pad-17"\>Logout</a></li>
+                {% else %}
+                <li><a href="#LoginModal" class="pad-17" data-toggle="modal" data-target="#LoginModal">Login</a></li>
+                {% endif %}
+                <!-- Button trigger modal -->
             </ul>
         </div>
     </nav>
+    <div class="modal fade" id="LoginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                    로그인
+                </h4>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+
+                    <form role="form" action="/accounts/signin/" method="POST">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Email address</label>
+                            <input type="email" name="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email" />
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Password</label>
+                            <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password" />
+                        </div>
+                        <button type="button" class="btn btn-default" onclick="javascript:this.form.action='/accounts/signup/';this.form.submit()">Sign up</button>
+                        <button type="submit" class="btn btn-default">Sign in</button>
+                        <a class="btn btn-social btn-facebook" onclick="">
+                            <span class="fa fa-facebook"></span> Sign in with Facebook
+                        </a>
+                    </form>
+
+
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                        Save changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="wrapper">
         <div id="content">
             <div id="main">
@@ -66,7 +129,8 @@
                     </div>
                     <br>
                     <div class="row">
-                        <br /><br />
+                        <br />
+                        <br />
                         <h2 class="text-center hh1 col-md-10 col-md-offset-1">6명의 사람들이 사용중이고, 20개의 슬라이드가 이 사이트를 통해 전달되었습니다. </h2>
                     </div>
                     <br>

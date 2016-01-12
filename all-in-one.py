@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request as req, send_from_directory, url_for
+from flask import Flask, render_template, request as req, send_from_directory, url_for, redirect, session, flash
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.script import Manager, Server
 from flask.ext.migrate import Migrate, MigrateCommand
@@ -79,9 +79,9 @@ manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 manager.add_command('run', Server(host='0.0.0.0', port=5000))
 
+
 @manager.command
 def list_routes():
-    import urllib
     output = []
     for rule in app.url_map.iter_rules():
 
@@ -91,11 +91,16 @@ def list_routes():
 
         methods = ','.join(rule.methods)
         url = url_for(rule.endpoint, **options)
-        line = urllib.unquote("{:50s} {:20s} {}".format(rule.endpoint, methods, url))
+        line = "{:50s} {:20s} {}".format(rule.endpoint, methods, url)
         output.append(line)
 
     for line in sorted(output):
         print(line)
+
+
+@manager.command
+def create_all():
+    db.create_all()
 
 
 @app.route('/static/<path:filename>')
@@ -105,7 +110,7 @@ def static_serving(filename):
 
 def get_dir_files(title):
     files = []
-    for (dirpath, dirnames, filenames) in walk(join('/tmp/slideshare-vpn/', title)): # TODO string to media
+    for (dirpath, dirnames, filenames) in walk(join('/tmp/slideshare-vpn/', title)):  # TODO string to media
         # print(dirpath, filenames)
         for f in filenames:
             files.append(abspath(join(dirpath, f)))
@@ -162,6 +167,46 @@ def index():
 def result():
     return render_template('result.html')
 
+
+@app.route("/accounts/signin/", methods=['POST'])
+def signin():
+    try:
+        session['email']
+        return redirect('/')
+    except KeyError:
+        pass
+
+    email = req.form['email']
+    password = req.form['password']
+    user = db.session.query(User).filter_by(email=email, is_active=True).first()
+    print(user is None, user.check_password(password))
+    if user is not None and user.check_password(password):
+        session['email'] = email
+        return redirect('/')
+    elif user.is_active is False:
+        flash('로그인이 차단된 계정입니다.')
+        return redirect('/', code=403)
+    else:
+        flash('아이디 혹은 비밀번호가 잘못되었습니다.')
+        return redirect('/')
+
+
+@app.route("/accounts/signup/", methods=['POST'])
+def signup():
+    try:
+        session['email']
+        return redirect('/')
+    except KeyError:
+        pass
+    email = req.form['email']
+    password = req.form['password']
+    user = User(email, password)
+    try:
+        db.session.add(user)
+        db.session.commit()
+    except:
+        flash('회원가입이 실패했습니다. 다른 이메일로 시도해 주세요.')
+    return redirect('/')
 
 if __name__ == "__main__":
     manager.run()
