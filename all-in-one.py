@@ -20,10 +20,9 @@ celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 
 def get_dir_files(title):
     files = []
-    for (dirpath, dirnames, filenames) in walk(join('/tmp/slideshare-vpn/', title)):
-        print(dirpath, filenames)
+    for (dirpath, dirnames, filenames) in walk(join('/tmp/slideshare-vpn/', title)): # TODO string to media
+        # print(dirpath, filenames)
         for f in filenames:
-            print(f)
             files.append(abspath(join(dirpath, f)))
         break
     return files
@@ -31,8 +30,8 @@ def get_dir_files(title):
 
 def convert_pdf(title):
     from img2pdf import convert
-    files = get_dir_files(title)
-    files.sort()
+    from natsort import natsorted
+    files = natsorted(get_dir_files(title))
     print(files)
     pdf_bytes = convert(files, dpi=300, x=None, y=None)
     with open('%s.pdf' % title, 'wb') as doc:
