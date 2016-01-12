@@ -30,7 +30,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button-->
-            <a class="navbar-brand" href="#">SlideShare-ByPass</a>
+            <a class="navbar-brand" href="#">SlideShare-Download</a>
         </div>
         <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav">
@@ -47,27 +47,26 @@
                     <br>
                     <br>
                     <div class="row">
-                        <h1 class="text-center hh1 col-md-10 col-md-offset-1">보고싶은 슬라이드의 URL을 입력해 주세요.</h1>
+                        <h1 class="text-center hh1 col-md-10 col-md-offset-1">보고싶은 슬라이드의 Slideshare URL을 입력해 주세요.</h1>
                     </div>
                     <br>
                     <div class="row">
-                        <p class="col-md-6 col-md-offset-3" id="stip" style="display: block;">
+                        <!--p class="col-md-6 col-md-offset-3" id="stip" style="display: block;">
                             <b>http://</b> 를 붙여서 입력해 주세요.
                             <br /> ex) http://www.slideshare.net/stevescottsite/3-easy-steps-to-digitize-your-study-notes
-                        </p>
-                        <div class="input-group input-group-lg col-md-6 col-md-offset-3">
-                            <input id="sinpt" autofocus="" placeholder="http://www.slideshare.net/stevescottsite/3-easy-steps-to-digitize-your-study-notes" onkeydown="document.getElementById(&#39;stip&#39;).style.display=&#39;block&#39;;if (event.keyCode == 13) document.getElementById(&#39;sbtn&#39;).click()" type="text" class="form-control">
+                        </p-->
+                        <form class="input-group input-group-lg col-md-6 col-md-offset-3" action="/" method="POST">
+                            <input id="sinpt" autofocus="" name='url' placeholder="http://www.slideshare.net/stevescottsite/3-easy-steps-to-digitize-your-study-notes" type="text" class="form-control">
                             <span class="input-group-btn">
-<button id="sbtn" class="btn btn-primary" type="button">
-Go
-</button> </span>
-                        </div>
-                        <p class="col-md-6 col-md-offset-3">
-                            최근 본 슬라이드 - <a onclick="dtsrch(&#39;music video&#39;);" href="javascript:void(0)">music video</a> , <a onclick="dtsrch(&#39;best - apps&#39;);" href="javascript:void(0)">best - apps</a> , <a onclick="dtsrch(&#39;pay* p??&#39;);" href="javascript:void(0)">pay* p??</a> , <a onclick="dtsrch(&#39;let it be&#39;);" href="javascript:void(0)">let it be</a> , <a onclick="dtsrch(&#39;app* z&#39;);" href="javascript:void(0)">app* z</a>
-                        </p>
+                            <button id="sbtn" class="btn btn-primary" type="submit">
+                            Go
+                            </button>
+                            </span>
+                        </form>
                     </div>
                     <br>
                     <div class="row">
+                        <br /><br />
                         <h2 class="text-center hh1 col-md-10 col-md-offset-1">6명의 사람들이 사용중이고, 20개의 슬라이드가 이 사이트를 통해 전달되었습니다. </h2>
                     </div>
                     <br>
