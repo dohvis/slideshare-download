@@ -12,9 +12,13 @@ try:
 except ImportError:
     pass
 
-MEDIA = '/tmp/slideshare-vpn/'
-TEMPLATE_DIR = path.join(path.dirname(path.abspath(__file__)), 'templates')
-STATIC_DIR = path.join(path.dirname(path.abspath(__file__)), 'static')
+
+BASE_DIR = path.dirname(path.abspath(__file__))
+
+TEMPLATE_DIR = path.join(BASE_DIR, 'templates')
+STATIC_DIR = path.join(BASE_DIR, 'static')
+MEDIA_DIR = path.join(BASE_DIR, 'media')
+
 app = Flask(__name__, template_folder=TEMPLATE_DIR)
 
 
@@ -108,9 +112,14 @@ def static_serving(filename):
     return send_from_directory(STATIC_DIR, filename)
 
 
+@app.route('/media/<path:filename>')
+def media_serving(filename):
+    return send_from_directory(MEDIA_DIR, filename)
+
+
 def get_dir_files(title):
     files = []
-    for (dirpath, dirnames, filenames) in walk(join('/tmp/slideshare-vpn/', title)):  # TODO string to media
+    for (dirpath, dirnames, filenames) in walk(join(MEDIA_DIR, title)):
         # print(dirpath, filenames)
         for f in filenames:
             files.append(abspath(join(dirpath, f)))
@@ -122,9 +131,11 @@ def convert_pdf(title):
     from img2pdf import convert
     from natsort import natsorted
     files = natsorted(get_dir_files(title))
+    # To sort number in string. ex) [1.jpg, 10.jpg, 2.jpg ...] --> [1.jpg, 2.jpg, ... 10.jpg]
     print(files)
     pdf_bytes = convert(files, dpi=300, x=None, y=None)
-    with open('%s.pdf' % title, 'wb') as doc:
+    path = join(MEDIA_DIR, title)
+    with open('%s.pdf' % join(path, title), 'wb') as doc:
         doc.write(pdf_bytes)
 
 
@@ -140,7 +151,7 @@ def slide2img(self, url):
     print(title)
     images = soup.findAll('img', {'class': 'slide_image'})
 
-    saved_dir = join(MEDIA, title)
+    saved_dir = join(MEDIA_DIR, title)
     makedirs(saved_dir, exist_ok=True)  # Only python >= 3.2
 
     for i, image in enumerate(images):
