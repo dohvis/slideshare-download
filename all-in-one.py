@@ -208,5 +208,11 @@ def signup():
         flash('회원가입이 실패했습니다. 다른 이메일로 시도해 주세요.')
     return redirect('/')
 
+
+@app.route("/accounts/signout/", methods=['GET'])
+def signout():
+    del session['email']
+    return redirect('/')
+
 if __name__ == "__main__":
     manager.run()
