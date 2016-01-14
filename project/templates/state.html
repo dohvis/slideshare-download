@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>::Task Queue::</title>
+    <link rel="stylesheet" href="/static/bootstrap/bootstrap.css" type="text/css">
+    <script type="text/javascript" src="/static/js/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + "5000");
+        // event handler for server sent data
+        // the data is displayed in the "Received" section of the page
+        socket.on('state', function(msg) {
+            console.log(msg)
+        });
+    </script>
+    <style>
+        .progress {
+            margin-left: 15px;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="row col-md-3">
+    <div class="panel panel-default">
+        <div class="panel-thumbnail"><img src="/static/img/hacking.jpg" class="img-responsive"></div>
+        <div class="panel-body">
+            <p class="lead">해킹대회 리뷰 및 실전 해킹</p>
+            <p>토토등 2015 - 해킹 대회 리뷰 및 실전 해킹 - 임정원</p>
+        </div>
+        <div class="progress" style="margin-left:0px; margin-right:0px">
+            <div class="progress-bar progress-bar-success" role="progressbar" data-transitiongoal="57"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row col-md-3">
+    <div class="panel panel-default">
+        <div class="panel-thumbnail"><img src="/static/img/hacking.jpg" class="img-responsive"></div>
+        <div class="panel-body">
+            <p class="lead">해킹대회 리뷰 및 실전 해킹</p>
+            <p>토토등 2015 - 해킹 대회 리뷰 및 실전 해킹 - 임정원</p>
+        </div>
+        <div class="progress">
+            <div class="progress-bar progress-bar-info" role="progressbar" data-transitiongoal="10"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row col-md-3">
+    <div class="panel panel-default">
+        <div class="panel-thumbnail"><img src="/static/img/hacking.jpg" class="img-responsive"></div>
+        <div class="panel-body">
+            <p class="lead">해킹대회 리뷰 및 실전 해킹</p>
+            <p>토토등 2015 - 해킹 대회 리뷰 및 실전 해킹 - 임정원</p>
+        </div>
+        <div class="progress">
+            <div class="progress-bar progress-bar-warning" role="progressbar" data-transitiongoal="47"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row col-md-3">
+    <div class="panel panel-default">
+        <div class="panel-thumbnail"><img src="/static/img/hacking.jpg" class="img-responsive"></div>
+        <div class="panel-body">
+            <p class="lead">해킹대회 리뷰 및 실전 해킹</p>
+            <p>토토등 2015 - 해킹 대회 리뷰 및 실전 해킹 - 임정원</p>
+        </div>
+        <div class="progress">
+            <div class="progress-bar progress-bar-danger" role="progressbar" data-transitiongoal="80"></div>
+        </div>
+    </div>
+</div>
+
+
+<span id="update"></span>
+<span id="done"></span>
+
+</body>
+<script type="text/javascript" src="/static/bootstrap/bootstrap.min.js"></script>
+<script type="text/javascript"
+        src="//www.minddust.com/bootstrap-progressbar/demo/js/bootstrap-progressbar.js"></script>
+<script type="text/javascript">
+    function updateProgress(percentage) {
+        if (percentage > 100) percentage = 100;
+        $('.progress-bar').css('width', percentage + '%');
+        $('.progress-bar').html(percentage + '%');
+    }
+
+    $(document).ready(function () {
+        $('.progress .progress-bar').progressbar({
+            display_text: 'fill',
+            update: function (current_percentage) {
+                $('#update').html(current_percentage);
+            },
+            done: function () {
+                $('#done').html('yeah! done!');
+            }
+        });
+        $('.progress-bar').html('0%');
+        var i = 1;
+        setInterval(function () {
+            updateProgress(i);
+            i += 10;
+        }, 2000);
+
+    });
+</script>
+</html>
