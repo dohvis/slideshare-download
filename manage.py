@@ -40,6 +40,7 @@ try:
         result,
         static_serving,
         media_serving,
+        get_status
     )
     from .project.slides.core import slide2img
     from .project import celery
@@ -49,12 +50,14 @@ except SystemError:
         result,
         static_serving,
         media_serving,
+        get_status,
     )
     from project.slides.core import slide2img
     from project import celery
 if __name__ == "__main__":
     app.route('/', methods=['GET', 'POST'])(index)
     app.route('/state/')(result)
+    app.route('/api/state/')(get_status)
     app.route('/static/<path:filename>')(static_serving)
     app.route('/media/<path:filename>')(media_serving)
     manager.run()

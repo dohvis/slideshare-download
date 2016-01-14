@@ -5,7 +5,6 @@ from flask import (
     Flask,
 )
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask_socketio import SocketIO
 
 
 BASE_DIR = dirname(abspath(__file__))
@@ -27,7 +26,6 @@ def create_app():
 
 app = create_app()
 db = SQLAlchemy(app).init_app(app)
-# socketio = SocketIO(app, async_mode='threading')
 celery = Celery(app.name, backend='amqp', broker=app.config['CELERY_BROKER_URL'])
 from .slides.core import slide2img
 celery.task(bind=True)(slide2img)
