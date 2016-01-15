@@ -28,6 +28,7 @@ def get_status():
         task = slide2img.AsyncResult(uuid)
         if task.state == 'PENDING':
             response = {
+                'task_id': uuid,
                 'state': task.state,
                 'current': 0,
                 'total': 1,
@@ -35,16 +36,19 @@ def get_status():
             }
         elif task.state != 'FAILURE':
             response = {
+                'task_id': uuid,
                 'state': task.state,
+                'thumbnail': task.info.get('thumbnail', ''),
                 'current': task.info.get('current', 0),
                 'total': task.info.get('total', 1),
                 'status': task.info.get('status', '')
             }
-            if 'result' in task.info:
-                response['result'] = task.info['result']
+            if 'pdf_url' in task.info:
+                response['pdf_url'] = task.info['pdf_url']
         else:
             # something went wrong in the background job
             response = {
+                'task_id': uuid,
                 'state': task.state,
                 'current': 1,
                 'total': 1,

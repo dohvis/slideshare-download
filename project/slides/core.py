@@ -57,10 +57,14 @@ def slide2img(self, url):
         print("command : %s" % command)
         self.update_state(state='PROGRESS',
                           meta={'current': i,
+                                'thumbnail': '/media/%s/0.jpg' % title,
                                 'total': len(list(images)),
                                 'status': command})
         system(command)
 
     convert_pdf(title)
-    return {'current': 100, 'total': 100, 'status': 'Task completed!',
-            'result': '/media/%s/%s.pdf' % (title, title)}
+    return {'current': 100,
+            'total': 100,
+            'status': 'Task completed!',
+            'thumbnail': '/media/%s/0.jpg' % title,
+            'pdf_url': '/media/%s/%s.pdf' % (title, title)}
