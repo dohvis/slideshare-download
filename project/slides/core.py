@@ -39,24 +39,31 @@ def convert_pdf(title):
 
 @celery.task(bind=True)
 def slide2img(self, url):
+    import sys
+    sys.setrecursionlimit(100000)
     from bs4 import BeautifulSoup
-    from urllib import request
-
-    html = request.urlopen(url).read()
+    from requests import get
+    html = get(url).content
     soup = BeautifulSoup(html, "html.parser")
     title = soup.title.string
     title = title.replace(" ", "-")
+    author = soup.find('span', {'itemprop': 'name'}).string
     images = soup.findAll('img', {'class': 'slide_image'})
-
+    try:
+        description = soup.find('p', {'id': 'slideshow-description-paragraph'}).string
+    except AttributeError:
+        description = ''
     saved_dir = join(MEDIA_DIR, title)
     makedirs(saved_dir, exist_ok=True)  # Only python >= 3.2
-
     for i, image in enumerate(images):
         image_url = image['data-full'].split('?')[0]
-        command = 'wget %s -O %s.jpg --quiet' % (image_url, join(saved_dir, str(i)))
+        command = 'wget \'%s\' -O \'%s.jpg\' --quiet' % (image_url, join(saved_dir, str(i)))
         print("command : %s" % command)
         self.update_state(state='PROGRESS',
                           meta={'current': i,
+                                'author': author,
+                                'description': description,
+                                'title': title,
                                 'thumbnail': '/media/%s/0.jpg' % title,
                                 'total': len(list(images)),
                                 'status': command})
@@ -65,6 +72,9 @@ def slide2img(self, url):
     convert_pdf(title)
     return {'current': 100,
             'total': 100,
+            'title': title,
+            'author': author,
+            'description': description,
             'status': 'Task completed!',
             'thumbnail': '/media/%s/0.jpg' % title,
             'pdf_url': '/media/%s/%s.pdf' % (title, title)}

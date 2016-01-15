@@ -10,8 +10,14 @@ def index():
     if req.method == 'GET':
         return render_template('index.html')
     else:
+        url = req.form['url']
         from .slides.core import slide2img
-        task = slide2img.delay(req.form['url'])
+        """
+        from . import db
+        from .slides.models import Slide
+        db.session.query(Slide).filter_by(url=url)
+        """
+        task = slide2img.delay(url)
     return redirect('/state/')
 
 
@@ -38,6 +44,9 @@ def get_status():
             response = {
                 'task_id': uuid,
                 'state': task.state,
+                'title': task.info.get('title', ''),
+                'author': task.info.get('author', ''),
+                'description': task.info.get('description', ''),
                 'thumbnail': task.info.get('thumbnail', ''),
                 'current': task.info.get('current', 0),
                 'total': task.info.get('total', 1),
