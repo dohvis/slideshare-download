@@ -25,7 +25,7 @@ def create_app():
 
 
 app = create_app()
-db = SQLAlchemy(app).init_app(app)
+db.init_app(app)
 celery = Celery(app.name, backend='amqp', broker=app.config['CELERY_BROKER_URL'])
 from .slides.core import slide2img
 celery.task(bind=True)(slide2img)
