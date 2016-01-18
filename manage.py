@@ -1,9 +1,13 @@
 from flask import (
     url_for,
 )
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 from flask.ext.script import Manager, Server
 from flask.ext.migrate import Migrate, MigrateCommand
 from project import app, db
+from project.accounts.models import User
+from project.slides.models import Slide
 
 migrate = Migrate(app, db)
 manager = Manager(app)
@@ -51,6 +55,7 @@ except SystemError:
         static_serving,
         media_serving,
         get_status,
+        redirect_real_path,
     )
     from project.slides.core import slide2img
     from project import celery
@@ -58,6 +63,10 @@ if __name__ == "__main__":
     app.route('/', methods=['GET', 'POST'])(index)
     app.route('/state/')(result)
     app.route('/api/state/')(get_status)
+    app.route('/api/serve/<string:_hash>')(redirect_real_path)
     app.route('/static/<path:filename>')(static_serving)
     app.route('/media/<path:filename>')(media_serving)
+    admin = Admin(app, name='slideshare-downloader', template_mode='bootstrap3')
+    admin.add_view(ModelView(User, db.session))
+    admin.add_view(ModelView(Slide, db.session))
     manager.run()
