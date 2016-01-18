@@ -19,7 +19,7 @@ db = SQLAlchemy(app)
 
 def create_app():
     from .accounts import account_bp
-    app.config.from_pyfile('../config.cfg')
+    app.config.from_pyfile('../config.py')
     app.register_blueprint(account_bp, url_prefix='/accounts')
     return app
 
