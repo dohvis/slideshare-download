@@ -4,12 +4,15 @@ from flask import (
     redirect,
     send_from_directory,
 )
+from . import db
 from .slides.models import Slide
 
 
 def index():
+    from .slides.models import Slide
     if req.method == 'GET':
-        return render_template('index.html')
+        slides = db.session.query(Slide).all()
+        return render_template('index.html', slides=slides)
     else:
         url = req.form['url']
         from .slides.models import Slide

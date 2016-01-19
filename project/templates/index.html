@@ -138,20 +138,24 @@
                 </div>
             </div>
             <br>
-            <div class="row">
+            {% for s in slides %}
                 <div class="row col-md-3">
                     <div class="panel panel-default">
-                        <div class="panel-thumbnail"><img src="/static/img/hacking.jpg" class="img-responsive"></div>
+                        <div class="panel-thumbnail">
+                            <a target='_blank' href="/api/serve/{{ s._hash }}">
+                                <img src="/media/{{ s.thumbnail }}" class="img-responsive">
+                            </a>
+                        </div>
                         <div class="panel-body">
-                            <p class="lead">해킹대회 리뷰 및 실전 해킹</p>
-                            <p>토토등 2015 - 해킹 대회 리뷰 및 실전 해킹 - 임정원</p>
+                            <p class="lead">{{ s.title }}</p>
+                            <p>{{ s.author }}</p>
 
                             <p>
                             </p>
                         </div>
                     </div>
                 </div>
-            </div>
+            {% endfor %}
             <br>
             <br>
             <br>

@@ -16,7 +16,7 @@ font-weight:300;
 }
 
 #footer {
-bottom:0;
+bottom: -400px;
 position:absolute;
 width:100%;
 }

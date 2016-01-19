@@ -6,6 +6,9 @@ class Slide(db.Model):
     __tablename__ = "slide"
     idx = db.Column(db.Integer(), primary_key=True)
     slideshare_url = db.Column(db.String(255))
+    title = db.Column(db.String(64))
+    author = db.Column(db.String(64))
+    description = db.Column(db.String(255))
     thumbnail = db.Column(db.String(255))
     pdf_path = db.Column(db.String(255))
     views = db.Column(db.Integer, default=0)

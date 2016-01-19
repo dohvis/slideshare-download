@@ -65,6 +65,9 @@ def slide2img(self, url):
             fp.write(result.content)
         if i == 0:
             s = Slide.query.filter_by(slideshare_url=url).first()
+            s.title = title
+            s.description = description
+            s.author = author
             s.thumbnail = '{}/0.jpg'.format(title)
             db.session.add(s)
             db.session.commit()
