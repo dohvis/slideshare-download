@@ -20,11 +20,11 @@
 <script type="text/javascript" src="/static/bootstrap/bootstrap.min.js"></script>
 <script type="text/javascript" src="/static/js/bootstrap-progressbar.min.js"></script>
 <script type="text/javascript">
-    function updateProgress(task_id, percentage, pdf_url) {
-        //console.log(task_id, percentage);
+    function updateProgress(task_id, current, total, percentage, pdf_url) {
         if (percentage > 100) percentage = 100;
+
         $('#'+task_id+' .progress-bar').css('width', percentage + '%');
-        $('#'+task_id+' .progress-bar').html(percentage + '%');
+        $('#'+task_id+' .progress-bar').html(current+'/'+total+' ('+percentage + '%)');
         if(percentage == 100)
         {
             var p =$('#'+task_id+' .panel-thumbnail').html();
@@ -67,18 +67,19 @@
                     if(data.states[i]['state'] == 'PENDING' || data.states[i]['state'] == 'FAILURE')
                         return;
                     $("#loading").remove();
-                    console.log(data.states[i]['state']);
                     var title = data.states[i]['title'];
                     var description = data.states[i]['description'];
                     var author = data.states[i]['author'];
                     var pdf_url = data.states[i]['pdf_url'];
-                    var percent = parseInt(data.states[i]['current'] / data.states[i]['total'] * 100);
                     var thumbnail = data.states[i]['thumbnail'];
                     var task_id = data.states[i]['task_id'];
+                    var current = data.states[i]['current'];
+                    var total = data.states[i]['total'];
+                    var percent = parseInt((current / total) * 100);
                     //console.log(pdf_url, percent, thumbnail, task_id);
                     if($('#'+task_id).length == 0)
                         createCard(task_id,title, author, percent, thumbnail);
-                    updateProgress(task_id, percent, pdf_url);
+                    updateProgress(task_id,current, total, percent, pdf_url);
                 });
             });
         }, 2000);

@@ -57,6 +57,7 @@ def slide2img(self, url):
         description = ''
     saved_dir = join(MEDIA_DIR, title)
     makedirs(saved_dir, exist_ok=True)  # Only python >= 3.2
+    total = len(list(images))
     for i, image in enumerate(images):
         image_url = image['data-full'].split('?')[0]
         result = get(image_url)
@@ -71,21 +72,22 @@ def slide2img(self, url):
             s.thumbnail = '{}/0.jpg'.format(title)
             db.session.add(s)
             db.session.commit()
+
         self.update_state(state='PROGRESS',
                           meta={'current': i,
                                 'author': author,
                                 'description': description,
                                 'title': title,
                                 'thumbnail': '/media/{}'.format(s.thumbnail),
-                                'total': len(list(images)),
+                                'total': total,
                                 })
         print(i)
     s.pdf_path = convert_pdf(title)
     db.session.commit()
     Slide.get_hash_of_pdf(url)
 
-    return {'current': 100,
-            'total': 100,
+    return {'current': total,
+            'total': total,
             'title': title,
             'author': author,
             'description': description,
