@@ -6,13 +6,17 @@ from flask import (
 )
 from . import db
 from .slides.models import Slide
+from .accounts.models import User
 
 
 def index():
     from .slides.models import Slide
     if req.method == 'GET':
         slides = db.session.query(Slide).all()
-        return render_template('index.html', slides=slides)
+        u = len(list(db.session.query(User).all()))
+        s = len(list(db.session.query(Slide).all()))
+
+        return render_template('index.html', slides=slides, current_users=u, current_slides=s)
     else:
         url = req.form['url']
         from .slides.models import Slide
