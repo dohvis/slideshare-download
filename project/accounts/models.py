@@ -1,9 +1,11 @@
 from .. import db
+from ..slides.models import Slide
+
 
 users_slides = db.Table(
         'users_slides',
         db.Column("user_id", db.Integer, db.ForeignKey("user.idx")),
-        db.Column("slide_id", db.Integer, db.ForeignKey("slide.idx"))
+        db.Column("slide_id", db.Integer, db.ForeignKey("slide.idx")),
 )
 
 
@@ -28,5 +30,5 @@ class User(db.Model):
         self.password = generate_password_hash(password)
 
     def check_password(self, password):
-        from werkzeug.security import check_password_hash, generate_password_hash
+        from werkzeug.security import check_password_hash
         return check_password_hash(self.password, password)

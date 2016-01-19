@@ -4,6 +4,7 @@ from flask import (
     redirect,
     send_from_directory,
 )
+from .slides.models import Slide
 
 
 def index():
@@ -11,10 +12,13 @@ def index():
         return render_template('index.html')
     else:
         url = req.form['url']
+        from .slides.models import Slide
+        s, created = Slide.get_or_create(url)
+        if created:
+            return redirect('/api/serve/%s' % s._hash)
         from .slides.core import slide2img
         """
         from . import db
-        from .slides.models import Slide
         db.session.query(Slide).filter_by(url=url)
         """
         task = slide2img.delay(url)
@@ -66,6 +70,12 @@ def get_status():
         res.append(response)
     return jsonify(states=res)
 
+
+def redirect_real_path(_hash):
+    s = Slide.query.filter_by(_hash=_hash).first()
+    if not s:
+        return 404
+    return redirect('/media/{}'.format(s.pdf_path))
 
 
 def static_serving(filename):

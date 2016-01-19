@@ -11,7 +11,9 @@ from .. import (
     celery,
     MEDIA_DIR,
 )
-
+from requests import get
+from .. import db
+from .models import Slide
 
 def get_dir_files(title):
     files = []
@@ -31,10 +33,11 @@ def convert_pdf(title):
     # To sort number in string. ex) [1.jpg, 10.jpg, 2.jpg ...] --> [1.jpg, 2.jpg, ... 10.jpg]
     print(files)
     pdf_bytes = convert(files, dpi=300, x=None, y=None)
-    path = join(MEDIA_DIR, title)
-    with open('%s.pdf' % join(path, title), 'wb') as doc:
+    filepath = '{}.pdf'.format(join(title, title))
+
+    with open(join(MEDIA_DIR, filepath), 'wb') as doc:
         doc.write(pdf_bytes)
-    return True
+    return filepath
 
 
 @celery.task(bind=True)
@@ -42,7 +45,6 @@ def slide2img(self, url):
     import sys
     sys.setrecursionlimit(100000)
     from bs4 import BeautifulSoup
-    from requests import get
     html = get(url).content
     soup = BeautifulSoup(html, "html.parser")
     title = soup.title.string
@@ -57,24 +59,32 @@ def slide2img(self, url):
     makedirs(saved_dir, exist_ok=True)  # Only python >= 3.2
     for i, image in enumerate(images):
         image_url = image['data-full'].split('?')[0]
-        command = 'wget \'%s\' -O \'%s.jpg\' --quiet' % (image_url, join(saved_dir, str(i)))
-        print("command : %s" % command)
+        result = get(image_url)
+        filename = '{}.jpg'.format(join(saved_dir, str(i))) # full path of image
+        with open(filename, "wb") as fp:
+            fp.write(result.content)
+        if i == 0:
+            s = Slide.query.filter_by(slideshare_url=url).first()
+            s.thumbnail = '{}/0.jpg'.format(title)
+            db.session.add(s)
+            db.session.commit()
         self.update_state(state='PROGRESS',
                           meta={'current': i,
                                 'author': author,
                                 'description': description,
                                 'title': title,
-                                'thumbnail': '/media/%s/0.jpg' % title,
+                                'thumbnail': '/media/{}'.format(s.thumbnail),
                                 'total': len(list(images)),
-                                'status': command})
-        system(command)
+                                })
+        print(i)
+    s.pdf_path = convert_pdf(title)
+    db.session.commit()
+    Slide.get_hash_of_pdf(url)
 
-    convert_pdf(title)
     return {'current': 100,
             'total': 100,
             'title': title,
             'author': author,
             'description': description,
-            'status': 'Task completed!',
             'thumbnail': '/media/%s/0.jpg' % title,
             'pdf_url': '/media/%s/%s.pdf' % (title, title)}
