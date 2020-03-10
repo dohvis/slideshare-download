@@ -1,0 +1,8 @@
+import os
+from downloader import BASE_DIR
+
+DEBUG = True or False
+FACEBOOK_APP_ID = "YOUR_FACEBOOK_APP_ID"
+FACEBOOK_APP_SECRET = "YOUR_FACEBOOK_APP_SECRET"
+SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'sqlite3.db')
+CELERY_BROKER_URL = 'amqp://id:pw@domain:port//'
