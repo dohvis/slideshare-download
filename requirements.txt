@@ -35,5 +35,5 @@ pytz==2015.7
 requests==2.9.1
 SQLAlchemy==1.0.11
 tornado==4.3
-Werkzeug==0.11.3
+Werkzeug==0.15.3
 WTForms==2.1
