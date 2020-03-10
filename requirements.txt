@@ -7,7 +7,7 @@ beautifulsoup4==4.4.1
 billiard==3.3.0.22
 celery==3.1.19
 flake8==2.5.1
-Flask==0.10.1
+Flask==1.0
 Flask-Admin==1.4.0
 Flask-Celery==2.4.3
 Flask-Migrate==1.7.0
