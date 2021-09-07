@@ -27,7 +27,7 @@ mccabe==0.3.1
 natsort==5.0.1
 oauth2==1.9.0.post1
 pep8==1.7.0
-Pillow==6.2.0
+Pillow==8.3.2
 pyflakes==1.0.0
 PyMySQL==0.7.1
 python-editor==0.5
